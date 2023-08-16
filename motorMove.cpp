@@ -1,3 +1,5 @@
+// super simplified version of how DJIMotor works and how we access the remote data
+
 #include <string>
 constexpr int CAN_HANDLER_NUMBER = 2;
 
