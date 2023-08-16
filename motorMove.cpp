@@ -151,6 +151,7 @@ void remoteRead(){
 }
 
 // ADD CODE BELOW
+// Use prints and getData() for debugging purposes
 
 int main(){
   
