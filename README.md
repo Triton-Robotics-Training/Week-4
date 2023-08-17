@@ -129,7 +129,13 @@ In this separate document, we go more into depth on the CANHandler and our proto
 
 # Exercise #1
 
-For this exercise, we're writing main robot code. The 
+For this exercise, we're writing main robot code. The task is to make the main robot code do as such: 
+
+We have three robot modes we want you to code, depending on the left switch `lS`. If it is up, we are in power mode, if it is mid we are in speed mode and if is down we are in position mode.
+
+For all three modes, set the respective element to 10x the left stick x  `lS` value.
+
+You can use getData to see what the value is, given a specific `motorDataType`.
 
 There is again [starter code](motorMove.cpp). This time, you have full freedom to change anything in the main class section, but nothing above, as thats all part of the base classes. We do recommend adding prints anywhere, to help you debug your code, but make sure your code works with the original classes.
 
