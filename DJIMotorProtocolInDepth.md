@@ -44,8 +44,12 @@ With 8 bits, the maximum number you can get is 255. However, that is only positi
 
 Observe here, we have two bytes at the top, `0b00000100` and `0b10110000` (The `0b` defines the number as binary). From there, we get two unsigned int8s (uint8), which are 4 and 176. If we instead use the entire 16 bits as its own integer, we get one large integer, 1200, an int16.
 
+### Motor-specific
+
 Now, one of these int16s will tell a motor what power to go at, as a number from -16384 to 16383. This is defined by the motor's procotol. In one full frame however, we have the aforementioned 8 bytes, paired up into 4 int16s, controlling four motors at a time, all sent to one adress.
 
 Below is the representation of the data in one frame of data
 
 ![](assets/oneframe.jpg)
+
+In this frame, we are telling Motor 1 to give it 1301 power, Motor 2 to give -5012, Motor 3 to give 570, and Motor 4 to give -10000. One more thing to keep in mind is that from stop, a motor will generally need about 1k to overcome static friction and begin moving, and after which that value can be lowered as it only needs to maintain movement, not begin it.

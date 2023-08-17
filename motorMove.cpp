@@ -1,5 +1,7 @@
 // super simplified version of how DJIMotor works and how we access the remote data
 
+bool debug = false;
+
 #include <string>
 constexpr int CAN_HANDLER_NUMBER = 2;
 
@@ -147,10 +149,19 @@ void remoteRead(){
         lS = Remote::SwitchState::DOWN;
 
     lX = count;
+
+    if(debug){
+        printf("lX:[%d] lS:[%d]",lX, (int)lS);
+    }
+
     count++;
 }
 
-// ADD CODE BELOW
+///////////////
+//main.cpp
+///////////////
+
+// ONLY ADD CODE BELOW
 // Use prints and getData() for debugging purposes
 
 int main(){

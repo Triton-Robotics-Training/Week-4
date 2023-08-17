@@ -10,6 +10,7 @@ know which motor on which port is which type.
 | ![](assets/gm6020.png) | <img src="assets/m3508.png"  width="200"> | <img src="assets/m2006.png"  width="100"> |
 
 ## Constructor
+
 ```C++
 DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD, const std::string& name = "NO_NAME");
 ```
@@ -30,7 +31,7 @@ One thing to note with motor IDs is that there is an unusual style of overlap be
 | M2006   | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | DNE | DNE | DNE | DNE |
 | GM6020  | DNE | DNE | DNE | DNE | 1   | 2   | 3   | 4   | 5   | 6   | 7   | DNE |
 
-For example, you could have an M3508 on ID 2, an M2006 on ID 7, but then the M2006 on ID 7 would prevent you from having a GM6020 on ID 3. In the underlying structure, we would assign them data the same and they give us feedback the same. This is something you need to consider when you wire robots and set their IDs. One final thing to keep in mind is that the GM6020's range from 1-7, so the total theoretical max motors per bus
+For example, you could have an M3508 on ID 2, an M2006 on ID 7, but then the M2006 on ID 7 would prevent you from having a GM6020 on ID 3. In the underlying structure, we would assign them data the same and they give us feedback the same. This is something you need to consider when you wire robots and set their IDs. One final thing to keep in mind is that the GM6020's range from 1-7, so the total theoretical max motors per bus is 11, not 12
 
 #### Setting IDs for Motors
 
@@ -61,6 +62,7 @@ Our CANMotor class actually adds two more types of data that are not built into 
 `indexer.getData(POWEROUT)` Returns the power being sent to the motor, regardless of what movement mode the motor is in.
 
 ## A note on ticks
+
 One rotation contains 8192 ticks. You have access to this number from the DJIMotor class `TICKS_REVOLUTION`
 
 Ticks are the main method of measuring angle and position, however they behave differently on M3508s and M2006s than on GM6020s. On a GM6020, it behaves as you would expect, where each rotation of the output shaft is equivalent to 8192 ticks.
@@ -71,9 +73,9 @@ However, on an M3508 or an M2006, 8192 ticks is equal to one rotation of the int
 
 ## Making it Move
 
-#### Power
+#### setPower()
 
-Making a motor move can be done one of three ways. These all work on all three types of motors. We can assume again we have a motor named `indexer`.
+Making a motor move can be done one of three ways. These all work on all three types of motors. We can assume we have a motor named `indexer`.
 
 `indexer.setPower(int power)` gives the motor a raw current to run with with a range of -20A to 20A. The motor is not responding to any stimulus regarding its own speed, position, or torque, it just runs.
 The domain of input is -16384 to 16384, for the `M3508` and `M2006` and -32767 to 32767 for the `GM6020`. You can find these values in the DJIMotor class as `INT15_T_MAX` and `INT16_T_MAX` respectively.
@@ -82,9 +84,9 @@ For an M3508, the current you give directly corresponds to a torque, which means
 
 For a GM6020, the current seems to correspond to a speed, but with a load this changes.
 
-#### Speed
+#### setSpeed()
 
-The second way is to give it a speed. We can assume we have a motor named `indexer`.
+The second way is to give it a speed. We can assume again we have a motor named `indexer`.
 
 `indexer.setSpeed(int speed)` has the motor run at a speed. This runs the output through a PID, and the CANMotor class is using the motor’s encoder values to regulate it’s speed. This is in RPM.
 
@@ -92,9 +94,9 @@ For this specific case, the desired would be whatever speed you set, which remai
 
 For setSpeed to work correctly, the motor’s speed PID needs to be tuned specifically, as the same PID will change based on the load of the motor. A motor on the wheel is going to behave differently than the motor controlling the pitch of the turret.
 
-#### Position
+#### setPosition()
 
-Our final option is to give the motor a position. We can assume the motor is named `indexer`.
+Our final option is to give the motor a position. Again the motor is named `indexer`.
 
 `indexer.setPosition(int position)` has the motor run to and stay at a specific position. This runs through a separate PID, and in this movement mode, the CANMotor class is also regulating using the motor’s encoder values. The position is in ticks, where 8192 ticks is in one rotation.
 
@@ -102,8 +104,42 @@ The PID for the motor also needs to be tuned per-motor for setPosition to work c
 
 ![](assets/heropitch.jpg)
 
+## sendValues()
+
+`sendValues()` sends the messages on the CAN line based on what the DJIMotor class has determined to be the powerOut values. If we are power controlling a motor, we directly control the value it sends, and if we are using a Speed or Position PID, we declare an RPM or an angle and it goes through the respective PIDs to send a value instead.
+The `sendValues()` function goes through both busses and sends values for all motors. A motor that does not exist will just be sent two bytes of zeroes.
+
+When you do `setPosition()` or `setSpeed()`, it evaluates the target position or speed, and each time `sendValues()` is run, it runs the desired values through the PID to result in the power that would get the motor to that desired speed or position. Those are then sent to the motors. It’s important to run `sendValues()` every time you want to send new information to the motors. However, running it too often will cause the feedback data to get corrupted, so we only run `sendValues()` once every 10ms, same as most other code that can be run at a less urgent speed.
+
+## getFeedback()
+
+`getFeedback()` gets data from motors. We get four elements of data, stored in 8 bytes, and with an address so we know which motor sent it.
+
+The data comes in a similar way to the way we send it, with two bytes corresponding to each element of data. The exception here is temperature, which only uses one byte, and the last byte is permanently null.
+
+![](assets/feedback.png)
+
+When we get the data in `getFeedback()`, we store it in the DJIMotor object. Each DJIMotor has variables for the data we get, like Velocity, Angle, Temperature, and Torque. `getFeedback()` is simply the all-encompassing function that reads the CAN signals coming in, so it's important to run it often. We call `getFeedback()` as fast as the code can run
+
 ## CANHandler
 
 The CANHandler is what handles all the underlying low level communications between the motor and our controller. The CANHandler handles the recieving and sending of the 8-byte messages sent to and from the DJI Motors.
 
 In this separate document, we go more into depth on the CANHandler and our protocol: [DJIMotor Protocol In Depth](DJIMotorProtocolInDepth.md)
+
+# Exercise #1
+
+For this exercise, we're writing main robot code. The 
+
+There is again [starter code](motorMove.cpp). This time, you have full freedom to change anything in the main class section, but nothing above, as thats all part of the base classes. We do recommend adding prints anywhere, to help you debug your code, but make sure your code works with the original classes.
+
+### Remote Bits
+
+There are a number of remote functions and variables that we use to interface with the remote. For this sim, we have imitation functions that will mimic a behavior of a remote flipping on and off.
+
+`remoteRead()` is something that needs to be called at the start of every loop. It actually grabs the UART data from the remote and sets the remote values. The remote we use has 4 axis values and 2 tri-state switches. These correspond with 6 built in variables for you to use. 
+
+![](assets/dt7.png)
+
+The four axes are `lX`, `lY`,`rX`, `rY`, and they have bounds of -660 to 660.
+The two switches are `lS` and `rS`, and they have one of three states, `Remote::SwitchState::UP`, `Remote::SwitchState::MID`, or `Remote::SwitchState::DOWN`.
