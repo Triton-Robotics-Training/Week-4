@@ -139,6 +139,8 @@ You can use getData to see what the value is, given a specific `motorDataType`.
 
 There is again [starter code](motorMove.cpp). This time, you have full freedom to change anything in the main class section, but nothing above, as thats all part of the base classes. We do recommend adding prints anywhere, to help you debug your code, but make sure your code works with the original classes.
 
+You don't need to worry about adding any referee or inner-outer loop stuff, like in the example code, but all motor/remote related components you will need.
+
 ### Remote Bits
 
 There are a number of remote functions and variables that we use to interface with the remote. For this sim, we have imitation functions that will mimic a behavior of a remote flipping on and off.
