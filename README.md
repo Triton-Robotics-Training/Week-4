@@ -104,28 +104,39 @@ The PID for the motor also needs to be tuned per-motor for setPosition to work c
 
 ![](assets/heropitch.jpg)
 
-## sendValues()
+## s_sendValues()
 
-`sendValues()` sends the messages on the CAN line based on what the DJIMotor class has determined to be the powerOut values. If we are power controlling a motor, we directly control the value it sends, and if we are using a Speed or Position PID, we declare an RPM or an angle and it goes through the respective PIDs to send a value instead.
-The `sendValues()` function goes through both busses and sends values for all motors. A motor that does not exist will just be sent two bytes of zeroes.
+`s_sendValues()` sends the messages on the CAN line based on what the DJIMotor class has determined to be the powerOut values. If we are power controlling a motor, we directly control the value it sends, and if we are using a Speed or Position PID, we declare an RPM or an angle and it goes through the respective PIDs to send a value instead.
+The `s_sendValues()` function goes through both busses and sends values for all motors. A motor that does not exist will just be sent two bytes of zeroes.
 
-When you do `setPosition()` or `setSpeed()`, it evaluates the target position or speed, and each time `sendValues()` is run, it runs the desired values through the PID to result in the power that would get the motor to that desired speed or position. Those are then sent to the motors. It’s important to run `sendValues()` every time you want to send new information to the motors. However, running it too often will cause the feedback data to get corrupted, so we only run `sendValues()` once every 10ms, same as most other code that can be run at a less urgent speed.
+When you do `setPosition()` or `setSpeed()`, it evaluates the target position or speed, and each time `s_sendValues()` is run, it runs the desired values through the PID to result in the power that would get the motor to that desired speed or position. Those are then sent to the motors. It’s important to run `s_sendValues()` every time you want to send new information to the motors. However, running it too often will cause the feedback data to get corrupted, so we only run `s_sendValues()` once every 10ms, same as most other code that can be run at a less urgent speed.
 
-## getFeedback()
+## s_getFeedback()
 
-`getFeedback()` gets data from motors. We get four elements of data, stored in 8 bytes, and with an address so we know which motor sent it.
+`s_getFeedback()` gets data from motors. We get four elements of data, stored in 8 bytes, and with an address so we know which motor sent it.
 
 The data comes in a similar way to the way we send it, with two bytes corresponding to each element of data. The exception here is temperature, which only uses one byte, and the last byte is permanently null.
 
 ![](assets/feedback.png)
 
-When we get the data in `getFeedback()`, we store it in the DJIMotor object. Each DJIMotor has variables for the data we get, like Velocity, Angle, Temperature, and Torque. `getFeedback()` is simply the all-encompassing function that reads the CAN signals coming in, so it's important to run it often. We call `getFeedback()` as fast as the code can run
+When we get the data in `s_getFeedback()`, we store it in the DJIMotor object. Each DJIMotor has variables for the data we get, like Velocity, Angle, Temperature, and Torque. `s_getFeedback()` is simply the all-encompassing function that reads the CAN signals coming in, so it's important to run it often. We call `s_getFeedback()` as fast as the code can run
 
 ## CANHandler
 
 The CANHandler is what handles all the underlying low level communications between the motor and our controller. The CANHandler handles the recieving and sending of the 8-byte messages sent to and from the DJI Motors.
 
 In this separate document, we go more into depth on the CANHandler and our protocol: [DJIMotor Protocol In Depth](DJIMotorProtocolInDepth.md)
+
+## Remote Bits
+
+There are a number of remote functions and variables that we use to interface with the remote. For this sim, we have imitation functions that will mimic a behavior of a remote flipping on and off.
+
+`remoteRead()` is something that needs to be called at the start of every loop. It actually grabs the UART data from the remote and sets the remote values. The remote we use has 4 axis values and 2 tri-state switches. These correspond with 6 built in variables for you to use. 
+
+![](assets/dt7.png)
+
+The four axes are `lX`, `lY`,`rX`, `rY`, and they have bounds of -660 to 660.
+The two switches are `lS` and `rS`, and they have one of three states, `Remote::SwitchState::UP`, `Remote::SwitchState::MID`, or `Remote::SwitchState::DOWN`.
 
 # Exercise #1
 
@@ -140,14 +151,3 @@ You can use getData to see what the value is, given a specific `motorDataType`.
 There is again [starter code](motorMove.cpp). This time, you have full freedom to change anything in the main class section, but nothing above, as thats all part of the base classes. We do recommend adding prints anywhere, to help you debug your code, but make sure your code works with the original classes.
 
 You don't need to worry about adding any referee or inner-outer loop stuff, like in the example code, but all motor/remote related components you will need.
-
-### Remote Bits
-
-There are a number of remote functions and variables that we use to interface with the remote. For this sim, we have imitation functions that will mimic a behavior of a remote flipping on and off.
-
-`remoteRead()` is something that needs to be called at the start of every loop. It actually grabs the UART data from the remote and sets the remote values. The remote we use has 4 axis values and 2 tri-state switches. These correspond with 6 built in variables for you to use. 
-
-![](assets/dt7.png)
-
-The four axes are `lX`, `lY`,`rX`, `rY`, and they have bounds of -660 to 660.
-The two switches are `lS` and `rS`, and they have one of three states, `Remote::SwitchState::UP`, `Remote::SwitchState::MID`, or `Remote::SwitchState::DOWN`.
