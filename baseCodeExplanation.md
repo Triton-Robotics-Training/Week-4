@@ -45,7 +45,7 @@ int main(){
             DJIMotor::s_sendValues();
         }
         DJIMotor::s_getFeedback();
-        ThisThread::s_sleep_for(1ms);
+        ThisThread::sleep_for(1ms);
     }
 }
 ```
