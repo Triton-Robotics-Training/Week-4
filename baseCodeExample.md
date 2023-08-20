@@ -38,12 +38,17 @@ int main(){
 
             remoteRead(); //reading data from remote
 
-            //MAIN CODE
+            //MAIN CODE 
+            //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 10ms
 
             timeEnd_u = us_ticker_read();
 
             DJIMotor::s_sendValues();
         }
+
+        //FEEDBACK CODE DOES NEED TO RUN FASTER THAN 1MS
+        //OTHER QUICK AND URGENT TASKS GO HERE
+
         DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
     }
