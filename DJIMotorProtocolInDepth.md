@@ -26,7 +26,7 @@ Binary works the same way that decimal (Our standard number system) works, but i
 
 Which equates to
 
-$(0~\cdot~10^3)+(1\cdot10^2)+(2~\cdot10^1)+(5~\cdot10^0) = 125_{10}$
+$(0\cdot10^3)+(1\cdot10^2)+(2\cdot10^1)+(5\cdot10^0) = 125_{10}$
 
 We can apply the same logic to a base that is 2, however now, we cannot have any digits above 1 (The same way we don't have any digits above 9 in base 10)
 
@@ -34,7 +34,7 @@ We can apply the same logic to a base that is 2, however now, we cannot have any
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 0   | 1   | 1   | 1   | 1   | 1   | 0   | 1   |
 
-$(0~\cdot~2^7)+(1\cdot~2^6)+(1\cdot~2^5)+(1\cdot~2^4)+(1\cdot~2^3)+(1\cdot~2^2)+(0\cdot~2^1)+(1\cdot~2^0)= 125_{10}\\0)+(64)+(32)+(16)+(8)+(4)+(0)+(1)= 125_{10}$
+$(0\cdot2^7)+(1\cdot2^6)+(1\cdot2^5)+(1\cdot2^4)+(1\cdot2^3)+(1\cdot2^2)+(0\cdot2^1)+(1\cdot2^0)= 125_{10}\\0)+(64)+(32)+(16)+(8)+(4)+(0)+(1)= 125_{10}$
 
 As you can see, the math checks out, and `01111101` is the binary for 125
 
