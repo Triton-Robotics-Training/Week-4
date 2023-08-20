@@ -1,7 +1,4 @@
 // super simplified version of how DJIMotor works and how we access the remote data
-
-bool debug = false;
-
 #include <string>
 constexpr int CAN_HANDLER_NUMBER = 2;
 
@@ -135,7 +132,7 @@ public:
 DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
 
-void remoteRead(){
+void remoteRead(bool debug = false){
     static int count;
     count %= 660;
 
