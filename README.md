@@ -152,17 +152,6 @@ There is again [starter code](motorMove.cpp). This time, you have full freedom t
 
 You don't need to worry about adding any referee or inner-outer loop stuff, like in the example code, but all motor/remote related components you will need.
 
-### Remote Bits
-
-There are a number of remote functions and variables that we use to interface with the remote. For this sim, we have imitation functions that will mimic a behavior of a remote flipping on and off.
-
-`remoteRead()` is something that needs to be called at the start of every loop. It actually grabs the UART data from the remote and sets the remote values. The remote we use has 4 axis values and 2 tri-state switches. These correspond with 6 built in variables for you to use. 
-
-![](assets/dt7.png)
-
-The four axes are `lX`, `lY`,`rX`, `rY`, and they have bounds of -660 to 660.
-The two switches are `lS` and `rS`, and they have one of three states, `Remote::SwitchState::UP`, `Remote::SwitchState::MID`, or `Remote::SwitchState::DOWN`.
-
 # Final Thoughts
 
 As you finish the training program, we've compiled a small overview of the classes we use and how they fit together, and you can find that [here](classesOverview.md). It is intended to make the transition to working on the robot easier.
