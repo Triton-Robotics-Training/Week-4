@@ -144,7 +144,7 @@ For this exercise, we're writing main robot code. The task is to make the main r
 
 We have three robot modes we want you to code, depending on the left switch `lS`. If it is up, we are in power mode, if it is mid we are in speed mode and if is down we are in position mode.
 
-For all three modes, set the respective element to 10x the left stick x  `lS` value.
+For all three modes, set the respective element to 10x the left stick x  `lx` value.
 
 You can use getData to see what the value is, given a specific `motorDataType`.
 
