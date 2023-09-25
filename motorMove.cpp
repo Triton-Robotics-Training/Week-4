@@ -1,6 +1,6 @@
-// super simplified version of how DJIMotor works and how we access the remote data
 #include <string>
-constexpr int CAN_HANDLER_NUMBER = 2;
+#include "mbed.h"
+const int CAN_HANDLER_NUMBER = 2;
 
 enum motorType {
     NONE = 0,
@@ -41,8 +41,8 @@ Remote::SwitchState lS;         // left switch
 int lX;                         // x value of left joystick
 
 class CANHandler{
-    public:
-        enum CANBus {CANBUS_1, CANBUS_2, NOBUS};
+public:
+    enum CANBus {CANBUS_1, CANBUS_2, NOBUS};
 };
 
 class DJIMotor{
@@ -148,7 +148,7 @@ void remoteRead(bool debug = false){
     lX = count;
 
     if(debug){
-        printf("lX:[%d] lS:[%d]",lX, (int)lS);
+        printf("lX:[%d] lS:[%d]\n",lX, (int)lS);
     }
 
     count++;
@@ -162,5 +162,6 @@ void remoteRead(bool debug = false){
 // Use prints and getData() for debugging purposes
 
 int main(){
-  
+    
+    
 }
