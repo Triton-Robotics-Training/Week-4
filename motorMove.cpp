@@ -1,5 +1,6 @@
 #include <string>
-#include "mbed.h"
+#include <cstdint>
+#include <cstdio>
 const int CAN_HANDLER_NUMBER = 2;
 
 enum motorType {
