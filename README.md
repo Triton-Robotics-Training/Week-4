@@ -131,20 +131,20 @@ In this separate document, we go more into depth on the CANHandler and our proto
 
 There are a number of remote functions and variables that we use to interface with the remote. For this sim, we have imitation functions that will mimic a behavior of a remote flipping on and off.
 
-`remoteRead()` is something that needs to be called at the start of every loop. It actually grabs the UART data from the remote and sets the remote values. The remote we use has 4 axis values and 2 tri-state switches. These correspond with 6 built in variables for you to use. 
+`remote.read()` is something that needs to be called at the start of every loop. It actually grabs the UART data from the remote and sets the remote values. The remote we use has 4 axis values and 2 tri-state switches. These correspond with 6 built in variables for you to use. 
 
 ![](assets/dt7.png)
 
-The four axes are `lX`, `lY`,`rX`, `rY`, and they have bounds of -660 to 660.
-The two switches are `lS` and `rS`, and they have one of three states, `Remote::SwitchState::UP`, `Remote::SwitchState::MID`, or `Remote::SwitchState::DOWN`.
+The four axes are `remote.leftX()`, `remote.leftY()`,`remote.rightX()`, `remote.rightY()`, and they have bounds of -660 to 660.
+The two switches are `remote.leftSwitch()` and `remote.rightSwitch()`, and they have one of three states, `Remote::SwitchState::UP`, `Remote::SwitchState::MID`, or `Remote::SwitchState::DOWN`.
 
 # Exercise #1
 
 For this exercise, we're writing main robot code. The task is to make the main robot code do as such: 
 
-We have three robot modes we want you to code, depending on the left switch `lS`. If it is up, we are in power mode, if it is mid we are in speed mode and if is down we are in position mode.
+We have three robot modes we want you to code, depending on the left switch `remote.leftSwitch()`. If it is up, we are in power mode, if it is mid we are in speed mode and if is down we are in position mode.
 
-For all three modes, set the respective element to 10x the left stick x  `lX` value.
+For all three modes, set the respective element to 10x the left stick x  `remote.leftX()` value.
 
 You can use getData to see what the value is, given a specific `motorDataType`.
 
