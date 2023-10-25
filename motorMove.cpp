@@ -37,10 +37,6 @@ public:
     };
 };
 
-// never use global variables, we are using them here due to the nature of this assignment
-Remote::SwitchState lS;         // left switch
-int lX;                         // x value of left joystick
-
 class CANHandler{
 public:
     enum CANBus {CANBUS_1, CANBUS_2, NOBUS};
@@ -133,27 +129,42 @@ public:
 DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
 
-void remoteRead(bool debug = false){
-    static int count;
-    count %= 660;
+struct remote_{
+private:
+    Remote::SwitchState lS;
+    int lX;
 
-    if((count % 15) / 5  == 0)
-        lS = Remote::SwitchState::UP;
-
-    else if((count % 15) / 5 == 1)
-        lS = Remote::SwitchState::MID;
-
-    else if((count % 15) / 5 == 2)
-        lS = Remote::SwitchState::DOWN;
-
-    lX = count;
-
-    if(debug){
-        printf("lX:[%d] lS:[%d]\n",lX, (int)lS);
+public:
+    Remote::SwitchState leftSwitch() const{
+        return lS;
     }
 
-    count++;
-}
+    int leftX() const{
+        return lX;
+    }
+
+    void read(bool debug = false){
+        static int count;
+        count %= 660;
+
+        if((count % 15) / 5  == 0)
+            lS = Remote::SwitchState::UP;
+
+        else if((count % 15) / 5 == 1)
+            lS = Remote::SwitchState::MID;
+
+        else if((count % 15) / 5 == 2)
+            lS = Remote::SwitchState::DOWN;
+
+        lX = count;
+
+        if(debug){
+            printf("lX:[%d] lS:[%d]\n",lX, (int)lS);
+        }
+
+        count++;
+    }
+} remote;
 
 ///////////////
 //main.cpp
@@ -163,6 +174,7 @@ void remoteRead(bool debug = false){
 // Use prints and getData() for debugging purposes
 
 int main(){
-    
-    
+
+
+
 }
