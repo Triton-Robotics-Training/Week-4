@@ -1,5 +1,8 @@
 # Classes Overview
 
+### Coding Style
+[Guide](https://github.com/Triton-Robotics/TR-mbed/wiki/Very-Short-Coding-Style-Guide)
+
 ### DJIMotor
 
 DJIMotor is the class we use to interface with motors. It both sends data to the motors and recieves feedback from them, but the appropriate static methods `s_sendValues()` and `s_getFeedback()` need to be called occasionally. `s_sendValues()` needs to be called less often however, or it will interfere with feedback. Once a motor is constructed according to physical specs and physically set settings, we can make it move with included functions. Docs here: [TR-mbed: DJIMotor Class Reference](https://triton-robotics.github.io/TR-mbed/classDJIMotor.html)
