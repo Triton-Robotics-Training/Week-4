@@ -1,6 +1,6 @@
 # Classes Overview
 
-### Coding Style
+### Coding Style Guide
 [Guide](https://github.com/Triton-Robotics/TR-mbed/wiki/Very-Short-Coding-Style-Guide)
 
 ### DJIMotor
